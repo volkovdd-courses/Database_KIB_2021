@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  postgres:
+    build: .data/postgres
+    container_name: postgres_hw2
+    image: postgres_hw2
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: student 
+    ports:
+      - 5432:5432
+    volumes:
+      - chinook_postgres_volume:/var/lib/postgresql/data
+    networks:
+      - chinook_network
+
+volumes:
+  chinook_postgres_volume:
+
+networks:
+  chinook_network:
