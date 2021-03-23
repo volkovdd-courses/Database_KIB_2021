@@ -1,0 +1,681 @@
+= Лекция 1 Введение в базы данных 
+:revealjsdir: ../reveal.js
+:icons: font
+// we want local served fonts. Therefore patched sky.css
+//:revealjs_theme: sky
+:revealjs_customtheme: ../css/sky.css
+:revealjs_autoSlide: 5000
+:revealjs_history: true
+:revealjs_fragmentInURL: true
+:revealjs_viewDistance: 5
+:revealjs_width: 1408
+:revealjs_height: 792
+:revealjs_controls: true
+:revealjs_controlsLayout: edges
+:revealjs_controlsTutorial: true
+:revealjs_slideNumber: c/t
+:revealjs_showSlideNumber: speaker
+:revealjs_autoPlayMedia: true
+:revealjs_defaultTiming: 42
+//:revealjs_transitionSpeed: fast
+:revealjs_parallaxBackgroundImage: images/background-landscape-light-orange.jpg
+:revealjs_parallaxBackgroundSize: 4936px 2092px
+//:customcss: css/presentation.css
+:imagesdir: images
+:source-highlighter: highlightjs
+:highlightjs-theme: ../css/atom-one-light.css
+// we want local served font-awesome fonts
+:iconfont-remote!:
+:iconfont-name: ../fonts/fontawesome/css/all
+:figure-caption!:
+
+
+== Кто мы такие 
+[%step]
+* Баканчев Никита Иванович
+* Матхеев Николай Васильевич 
+
+
+== Обзор курса 
+* Мотивация по изучению БД
+* Административные вопросы 
+* Обзор курса 
+* Обзор технологий, используемых в курсе
+
+=== Почему стоит учить базы данных 
+image::SQL.png[SQL, 600, 600]
+
+=== Базы данных как область 
+* Сейчас количество данных резко увеличивается, поэтому важно разбираться в структуре обработки данных, а также наборе инфраструктуры.
+* Тема баз данных содержит очень много фундаментальных идей из Computer Science
+
+=== О чем этот курс 
+* Рассмотрим основы управления данными (data management)
+** Как разрабатывать базы данных, осуществлять запросы к ним, строить приложения над ними
+** Как “дебажить”, если что-то пойдет не так
+* Рассмотрим как работают системы управления базами данных
+* Также затронем математические основы 
+* Обычно мы будем говорить о проблемах на высоком уровне, но в конце планируем упасть до деталей реализации в коде 
+
+=== Правила игры 
+[.step]
+* Как вести себя в комнате - наблюдение за чатом, нормальный микрофон, если хочешь сказать - кнопка raise hand
+* Политика отчисления - автоматическая за две просроченные дз (первые недели дедлайн увеличен с 9 до 18 дней)
+* Количество занятий - планируется 16, но программа довольно адаптивна
+* (Потенциально) Очный митап 2-3 раза за курс, по желанию
+
+=== Технологии курса 
+* SQL, PostgreSQL
+* ЯП - Python, C(?)
+* Github
+* Формат сдачи - grader 
+
+
+
+== О чем поговорим сегодня 
+
+[%step]
+* Обзор литературы и курсов 
+* Природа данных, их польза и как управлять ими 
+* Способы хранения данных 
+* История СУБД и современные решения  
+
+
+
+=== О чем поговорим сегодня 
+
+[%step]
+* Архитектура СУБД 
+* Реляционная модель как дефакто стандарт работы с данными 
+* Итеративный/Декларативный подход в ЯП по отношению к СУБД
+* Обзор Junior-позиций, связанных с СУБД
+
+
+== Обзор литературы 
+
+
+[.columns.is-vcentered]
+=== К. Дж. Дейт Введение в системы баз данных 
+
+[.column]
+-- 
+* Классика CS 
+* Много про реляционную модель 
+* Немного outdated по SQL 
+--
+
+[.column]
+image::Date_Introduction_image.jpg[Date, 300, 400, link=https://www.ozon.ru/context/detail/id/136880774/]
+
+
+[.columns.is-vcentered]
+=== A. Silbershatz, Henry F. Korth, S. Sudarshan Database System Concepts
+
+[.column]
+--
+* Полноценный БД курс
+* Много дополнительных заданий 
+* 2020 edition
+--
+
+[.column]
+image::db7-cover.jpg[Date, 300, 400, link=https://www.db-book.com/db7/index.html]
+
+[.columns.is-vcentered]
+=== Б.А. Новиков, Е. А. Горшкова, Н.Г. Графеева Основы технологий баз данных 
+
+[.column]
+--
+* Курс по БД со спецификой на PostgreSQL 
+* Много дополнительных заданий 
+* 2020 edition
+--
+
+[.column]
+image::postgresql_book.png[Postgresql_book, 300, 400, link=https://postgrespro.ru/education/books/dbtech]
+
+
+[.columns.is-vcentered]
+=== SQL Cookbook: Query Solutions and Techniques for All SQL Users  
+
+[.column]
+--
+* Книга, показывающая, как писать запросы на SQL 
+* Много практических примеров
+* 2021 edition
+--
+
+[.column]
+image::sql_cookbook.jpg[SQL Cookbook, 300, 400, link=https://www.amazon.com/SQL-Cookbook-Query-Solutions-Techniques-ebook-dp-B08P3XYBM1/dp/B08P3XYBM1/ref=mt_other?_encoding=UTF8&me=&qid=]
+
+
+[.columns.is-vcentered]
+=== Edward Sciore Database Design and Implementation  
+
+[.column]
+--
+* Книга про то, как писать БД с нуля
+* Много заданий на программирование, Java
+* 2020 edition
+--
+
+[.column]
+image::DBDaI.png[DBDAI, 300, 400, link=https://www.amazon.com/Database-Design-Implementation-Data-Centric-Applications-ebook-dp-B085DZM79S/dp/B085DZM79S/ref=mt_other?_encoding=UTF8&me=&qid=]
+
+
+
+
+== Обзор курсов 
+
+[.columns.is-vcentered]
+=== Базы данных ВМК 
+[.column]
+--
+* Классический курс по теории баз данных
+* Довольно много времени уделено теории
+* Кузнецов С. Д. 
+--
+
+[.column]
+image::VMK_DB.png[VMK, 500, 400, link=https://www.youtube.com/watch?v=xYEeRAMyHdY&list=PLcsjsqLLSfNCWyzSIQewgbJKmeVV53VH6&index=1]
+
+
+
+[.columns.is-vcentered]
+=== CMU DB Database Systems
+[.column]
+--
+* Очень крутой курс, но больше про внутренности
+* Довольно глубокое погружение в internals
+* http://www.cs.cmu.edu/~pavlo/[Prof. Andy Pavlo]
+--
+
+[.column]
+image::CMU_DB.png[CMU, 500, 400, link=https://www.youtube.com/watch?v=oeYBdghaIjc&list=PLSE8ODhjZXjbohkNBWQs_otTrBTrjyohi]
+
+
+== Данные 
+
+Что такое данные?
+
+
+=== Данные 
+
+image::DIKW_Pyramid.svg.png[Пирамида данных, 600, 400, link=https://en.wikipedia.org/wiki/DIKW_pyramid]
+
+=== Информация о человеке 
+[%step]
+* Идентифицирующая информация 
+* Информация о человека в гос. структурах 
+* Информация о человеке в соц. сетях
+* Информация об образовании человека
+* ... 
+
+
+
+== Форматы хранения данных 
+Данные могут описаны совершенно в разном формате. Будем говорить о компьютерном представлении данных. 
+
+[.columns.vcentered]
+=== Человек vs машина
+
+[.column]
+--
+image::json_example.png[JSON, 400, 500, title=JSON]
+--
+
+[.column]
+--
+[.source, scala]
+----
+Seq( (1, "id"), (2, "name"), (3, "gpa"))
+         .toDF("num", "name")
+----
+
+image::binary_parquet.png[PARQUET, 400, 400, title=PARQUET]
+--
+
+[.columns.is-vcentered]
+=== По структуре данных 
+
+[.column]
+--
+image::Tabular_data.png[Структурированные, 400, 300, title=Структурированные]
+--
+
+[.column]
+--
+image::json_example.png[Полуструктурированные, 400, 300, title=Полуструктурированные]
+--
+
+[.column]
+--
+image::cat.jpg[Неструктурированные, 400, 300, title=Неструктурированные]
+--
+
+
+
+== СУБД
+__СУБД__ (система управления базами данных) - коллекция связанных между собой данных и набор программ для работы с этими данными 
+
+Коллекция информации, часто называемая __Базой данных__, содержит информацию о предприятии
+
+
+=== Требования к СУБД
+[%step]
+* Разделение программ и данных 
+* Высокоуровневый язык запросов 
+* Целостность 
+* Согласованность
+* Отказоустойчивость
+* Защита и разграничение доступа
+
+=== Вопрос в зал?
+--
+Является ли Excel СУБД?
+
+image::excel.png[Excel]
+--
+
+
+== Историческая справка о СУБД 
+
+[.columns.is-vcentered]
+=== 1960, Начало 1970-х
+
+[.column]
+--
+* Магнитные ленты заменяются на жесткие диски 
+* CODASYL
+* Иерархическая модель
+* сетевая модель 
+* IMS 
+--
+
+[.column]
+--
+image::ims_db.png[IMS, 400, 400, title=IMS DB, link=https://www.ibm.com/support/knowledgecenter/zosbasics/com.ibm.imsintro4db.doc.intro/ip0ind0011003584.htm]
+--
+ 
+
+[.columns.is-vcentered]
+=== 1970-ые Эдгар Кодд 
+
+[.column]
+--
+* Начало использования жестких дисков 
+* Статья Эдгара Кодда. 
+* https://www.seas.upenn.edu/~zives/03f/cis550/codd.pdf[A relational model of data for large shared data banks]
+--
+
+[.column]
+--
+image::Edgar_F_Codd.jpg[Edgar_F_Codd, 400, 400, title=Edgar F. Codd, link=https://en.wikipedia.org/wiki/Edgar_F._Codd]
+--
+
+
+
+[.columns.is-vcentered]
+=== Поздние 1970-ые и 1980-ые
+
+[.column]
+--
+* System R(IBM Research), SQL/DS, https://people.eecs.berkeley.edu/~brewer/cs262/SystemR.pdf[A History and Evaluation of System R]
+* Ingres (University California of Berkley) http://pages.cs.wisc.edu/~nil/764/root/3_p189-stonebraker.pdf[The Design and Implementation of INGRES]
+* Oracle 
+* Первые коммерческие СУБД: IBM DB2, Oracle, Ingres, DEC Rdb 
+--
+
+[.column]
+--
+image::IBM_DB2.png[IBM_DB2, 200, 200, link=https://www.ibm.com/uk-en/products/db2-database]
+image::oracle.png[Oracle, 200, 200, link=https://www.ibm.com/uk-en/products/db2-database]
+--
+
+
+
+
+[.columns.is-vcentered]
+=== 1990-ые
+
+[.column]
+--
+* SQL как стандарт
+* World Wide Web 
+* Объектно-ориентированные СУБД
+--
+
+[.column]
+--
+* SQL-86/87
+* SQL-89
+* SQL-92
+* SQL:1999
+* SQL:2003
+* SQL:2006
+* SQL:2008
+* SQL:2011
+* SQL:2016
+--
+
+[.columns.is-vcentered]
+=== Ранние 2000-ые
+
+[.column]
+--
+* XML, JSON
+* Пространственные данные
+* Open-Source DB: PostgreSQL, MySQL
+* Графофые базы данных
+* Data Mining
+* Развитие Web-Commerce
+* NoSQL
+--
+
+[.column]
+--
+image::postgresql.jpg[IBM_DB2, 200, 200, link=https://www.mysql.com/products/standard/]
+image::mysql.png[Oracle, 200, 200, link=https://www.mysql.com/products/standard/]
+--
+
+
+[.columns.is-vcentered]
+=== Поздние 2000-ые и 2010-ые
+
+[.column]
+--
+* Облачные Технологии
+* NoSQL
+* MapReduce парадигма
+* Google BigTable, Yahoo PNuts 
+--
+
+[.column]
+--
+image::google_bigtable.png[IBM_DB2, 200, 200, link=https://cloud.google.com/bigtable]
+image::mongoDB.png[Oracle, 200, 200, link=https://www.mongodb.com]
+--
+
+
+
+
+
+=== 2020-ые
+
+* In-Memory Databases
+* Автономные Базы данных 
+* SaaS
+* Виртуализация 
+
+== СУБД детали 
+
+=== Примеры приложений Баз Данных 
+* Информация о предприятии 
+** Продажи 
+** Бухгалтерия 
+** HR 
+* Производство
+* Банковское дело
+* Университеты
+
+
+=== Примеры приложений Баз Данных 
+* Авиакомпании
+* Телекоммуникации 
+* Электронная коммерция 
+* Документоориентированные базы данных 
+
+=== 2 технологии работы с данными 
+* OLTP (Online Transactional Processing) - большое число пользователей, небольшой объем информации, небольшие обновления 
+
+* OLAP (Online Analytical Processing) - обработка большого объема данных для принятия решений
+
+=== Цели систем баз данных 
+--
+Недостатки хранения информации в системе работы с файлами 
+
+* Избыточность и неконсистентность данных
+* Сложность в заборе данных
+* Изоляция данных 
+* Проблемы атомарности
+* Аномалии конкурентного доступа 
+* Проблемы безопасности 
+--
+
+
+== Модель данных 
+Модель данных - это коллекция концептуальных инструментов для описания данных, отношений данных и ограничений целостности
+
+=== Модели данных 
+[%step]
+* Реляционная модель (Relational model) 
+* E-R модель (Entity-Relationship model) 
+* Полуструктурированная модель данных (Semi-structured Data Model) 
+* Модели данных, основанных на объектах (Object-based Data Models) 
+
+
+[.columns.is-vcentered]
+=== Абстракция данных
+
+[.column]
+--
+* Физический уровень
+* Логический уровень
+* Уровень представления (view)
+--
+
+[.column]
+--
+image::data_abstaction.png[Data Abstaction, 400, 400]
+--
+
+
+
+== Архитектура баз данных и приложений 
+
+=== Архитектура баз данных 
+image::DB_Architecture.png[IBM_DB2, 850, 600]
+
+=== Архитектура приложений
+image::app_arch.png[IBM_DB2, 850, 600]
+
+
+[.columns.is-vcentered]
+=== Архитектура СУБД 
+
+[.column.is-one-third]
+--
+image::arch_of_a_dbms_main.png[AoDM, 300, 400, link=https://dl.acm.org/doi/10.1561/1900000002]
+--
+
+[.column]
+--
+image::arch_of_a_dbms_pic.png[AoDP, 600, 400]
+--
+
+
+
+
+
+== Императивный vs Декларативные стили
+
+
+[.columns.is-vcentered]
+=== Работа с файлом и с бд
+
+[.column.is-two-thirds]
+--
+[source, java]
+----
+public static List<String> getStudentsFromIT() { 
+    List<String> result = new ArrayList<>(); 
+    FileReader rdr = new FileReader("students.txt"); 
+    BufferedReader br = new BufferedReader(rdr); 
+    String line = br.readLine();
+    while (line != null) {
+        String[] vals = line.split("\t"); 
+        String faculty = vals[2];
+        if (faculty.equals("IT"))
+        result.add(vals[1]);
+        line = br.readLine(); 
+        }
+   return result;
+}
+----
+--
+
+
+[.column]
+--
+[source, sql]
+----
+SELECT name 
+  FROM Students
+ WHERE faculty = 'IT'
+----
+--
+
+== Модели данных 
+--
+Модель данных 
+
+* Структурная часть
+* Манипуляционная часть 
+* Целостная часть 
+--
+
+=== Структурная часть
+* Логические структуры данных, которые могут применяться на уровне пользователя при организации БД, соответствующих данной модели
+* Пример
+** Модель данных SQL - таблицы
+** Объектная модель данных - объекты
+** Реляционная модель данных - отношение
+
+=== Манипуляционная часть 
+* Спецификация одного или нескольких языков, предназначенных для написания запросов к БД
+* Языки могут быть как абстрактные (реляционная алгебра), так и производственными (SQL)
+* Задача манипуляционной части - обеспечение эталонным модельным языком БД 
+
+=== Целостная часть
+* Спецификация механизмов ограничения целостности, которые должны поддерживаться во всех реализациях СУБД, соответствующих данной модели 
+* В реляционной модели существует обязательное ограничение первичного ключа для отношения, а модели данных SQL данное ограничение отсутствует 
+
+=== Реляционная модель данных 
+* Основана на реляционной алгебре, понятии отношения и теории множеств и предикат 
+** Первоначальный набор из 8 операций был дан Коддом в 1970-ые годы 
+** В дальнейшем теория была продолжена К. Дейтом и Х. Дарвеном 
+** Существует ряд академических реализаций, написанных для работы на "чистой" реляционной алгебре 
+** В рамках курса будем обсуждеать интерпретацию Дейта и Алгебру А
+
+
+=== Развитие реляционной модели данных
+[.step]
+* Эдгар Кодд. IBM System R (1969+). Возникает язык QUEL, в дальнейшем SQL, и фактически свой новый стандарт 
+* Кристоффер Дейт, Хью Дарвен. В 90-х годах в акадимеской среде возникло течение, утверждающее, что SQL искажает реляционную модель и была разработана своя альтернатива
+
+=== Реляционные структуры данных
+* Логическая структура должна быть удобной для приложений, но и обладать возможностью ненавигационного выполнения 
+* Фактически, отношение - это таблица, но в которой ни столбцы, ни строчки не являются упорядоченными 
+* Для обозначения "таблиц" используется термин "_отношение_", для обозначения "строк" - термин "_кортеж_"
+* У отношения выделяется понятие "_заголовок_" и "_тело_"
+
+=== Структура отношения 
+image::relation.png[relation, 700, 500]
+
+
+
+=== Модель данных SQL
+* DQL
+* DDL
+* DML
+* DCL
+* TCL 
+
+
+=== DQL - Data Query Language 
+--
+[source, sql]
+----
+SELECT S.name
+  FROM Students S 
+ INNER 
+  JOIN Faculties F 
+    ON S.faculty_id = F.id 
+ WHERE F.name = 'IT'
+   AND S.gpa > 4.5
+----
+--
+
+
+=== DDL - Data Definition Language
+--
+[source, sql]
+----
+CREATE TABLE Faculties(
+    id integer primary key,
+    name varchar(30) not null,
+    unique(name)
+);
+
+CREATE TABLE Students( 
+    id integer primary key, 
+    name varchar(30) not null, 
+    faculty_id integer, 
+    gpa decimal(5, 2) not null,
+    foreign key (faculty_id) references faculties(id)
+)
+----
+--
+
+=== DML - Data Manipulation Language 
+--
+[source, sql]
+----
+INSERT INTO Faculties(id, name) 
+    VALUES (1, 'IT');
+
+UPDATE Students 
+   SET gpa = gpa + 0.5 
+ WHERE faculty_id IN (SELECT id 
+                        FROM Faculties 
+                       WHERE name = 'IT'
+                     );
+----
+--
+
+
+=== DCL - Data Control Language
+--
+[source, sql]
+----
+GRANT SELECT, UPDATE ON TABLE Students TO readonly;
+----
+--
+
+
+=== TCL - Transaction Control Language
+[source, sql]
+--
+COMMIT;
+
+ROLLBACK to savepoint1;
+
+SAVEPOINT savepoint1; 
+--
+
+== NoSQL vs SQL 
+
+* Хранилища Ключ-Значение (Redis, MemcacheDB)
+* Колоночное хранение (Cassandra, HBase)
+* Документоориентированные (MongoDB, CouchBase)
+* Графовые базы данных (Neo4j, OrientDB)
+
+
+== Где нужны знания SQL и СУБД
+[.step]
+* SQL/ETL/BI Developer
+* Junior Database Administrator
+* Аналитик данных/Системный аналитик
+* Data Engineer 
+* Data Scientist 
+* Software Engineer

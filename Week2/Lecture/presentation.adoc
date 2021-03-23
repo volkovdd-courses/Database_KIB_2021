@@ -1,0 +1,435 @@
+= Лекция 2 SQL Начало
+:revealjsdir: ../../reveal.js
+:icons: font
+// we want local served fonts. Therefore patched sky.css
+//:revealjs_theme: sky
+:revealjs_customtheme: ../../css/sky.css
+:revealjs_autoSlide: 5000
+:revealjs_history: true
+:revealjs_fragmentInURL: true
+:revealjs_viewDistance: 5
+:revealjs_width: 1408
+:revealjs_height: 792
+:revealjs_controls: true
+:revealjs_controlsLayout: edges
+:revealjs_controlsTutorial: true
+:revealjs_slideNumber: c/t
+:revealjs_showSlideNumber: speaker
+:revealjs_autoPlayMedia: true
+:revealjs_defaultTiming: 42
+//:revealjs_transitionSpeed: fast
+:revealjs_parallaxBackgroundImage: images/background-landscape-light-orange.jpg
+:revealjs_parallaxBackgroundSize: 4936px 2092px
+//:customcss: css/presentation.css
+:imagesdir: images
+:source-highlighter: highlight.js
+:highlightjs-languages: sql
+:highlightjs-theme: ../../css/atom-one-light.css
+// we want local served font-awesome fonts
+:iconfont-remote!:
+:iconfont-name: ../../fonts/fontawesome/css/all
+:figure-caption!:
+
+[.columns.is-vertical]
+== SQL. Hello World.
+
+[.column]
+--
+[source, sql]
+----
+SELECT 'Hello, world!'
+----
+_PostgreSQL_
+--
+
+[.column]
+--
+image::select_postgresql.gif[]
+--
+
+[.columns.is-vcentered]
+=== SQL. Hello World. Alias
+
+[.column]
+--
+[source, sql, step=1]
+----
+SELECT 'Hello, world!' as hw 
+----
+
+[source, sql, step=2]
+----
+SELECT 'Hello, world!' hw 
+----
+--
+
+[.column]
+--
+
+[step=1]
+image::select_postgresql_hw.gif[]
+
+[step=2]
+image::select_postgresql_hw_no_as.gif[]
+
+--
+
+[.columns]
+=== Базовый синтаксис создания таблицы 
+
+[.column]
+--
+[source, sql, subs="verbatim,quotes"]
+----
+CREATE TABLE Students_f( # <1>
+    id integer   primary key , # <2>
+    name varchar(30) not null, # <3>
+    faculty varchar(30),
+    city varchar(30),
+    gpa decimal(10, 2),
+    unique (name) # <4>
+);
+----
+--
+
+[.column.step]
+--
+<1> Синтаксис создания таблицы
+<2> Объявление столбца - <имя столбца> <тип данных> <ограничения целостности>
+<3> Тип данных varchar и ограничение целостности not null
+<4> Ограничение целостности unique
+--
+
+
+=== Базовый синтаксис. Вставка. 
+--
+[source, sql, step=1]
+----
+INSERT INTO students_f(id, name, faculty, city)
+    VALUES (1, 'Ivanov', 'KIB', 'Moscow');
+----
+
+[source, sql, step=2]
+----
+INSERT INTO students_f(id, name, faculty, city)
+    VALUES (2, 'Petrov', 'KIB', 'Moscow'),
+           (3, 'Fetisov', 'IT', 'Warsaw'),
+           (4, 'Smith', 'KIB', 'Samara');
+----
+
+[source, sql, step=3]
+----
+INSERT INTO students_f
+    VALUES (5, 'Alex', 'Economics', 'New York');
+
+----
+--
+
+
+=== Базовый синтаксис. Вставка. 
+--
+[source, sql, step=1]
+----
+INSERT INTO students_f(name, faculty, city, id)
+    VALUES ('Jackson', 'IT', 'Moscow', 6);
+----
+
+[source, sql, step=2]
+----
+INSERT INTO students_f(id, name)
+    VALUES (7, 'Willson');
+----
+
+[source, sql, step=3]
+----
+INSERT INTO students_f
+    VALUES (8, 'Lee');
+----
+--
+
+
+=== Базовый синтаксис. Ошибки. 
+--
+
+[source, sql, step=1]
+----
+INSERT INTO students_f(id, faculty)
+    VALUES (9, 'KIB');
+----
+
+[source, sql, step=2]
+----
+INSERT INTO students_f(id, name, faculty, city)
+    VALUES (7, 'Peterson', 'KIB', 'Moscow');
+----
+
+[source, sql, step=3]
+----
+INSERT INTO students_f(id, name, faculty, city)
+    VALUES (9, 'Ivanov', 'KIB', 'Moscow');
+----
+--
+
+== Базовый SELECT-FROM-WHERE блок 
+
+--
+[source, sql]
+----
+SELECT * 
+  FROM Students_f
+ WHERE faculty = 'KIB';
+----
+--
+
+=== Базовый SELECT-FROM-WHERE блок 
+--
+[source, sql]
+----
+SELECT * 
+  FROM Students_f
+ WHERE faculty in ('KIB', 'IT');
+----
+--
+
+=== Базовый SELECT-FROM-WHERE блок 
+--
+[source, sql]
+----
+SELECT name, faculty
+  FROM Students_f
+ WHERE faculty in ('KIB', 'IT');
+----
+--
+
+=== Базовый SELECT-FROM-WHERE блок 
+--
+[source, sql]
+----
+SELECT name, name || '->' || faculty
+  FROM Students_f
+ WHERE faculty in ('KIB', 'IT');
+----
+--
+
+=== Базовый SELECT-FROM-WHERE блок 
+--
+[source, sql]
+----
+SELECT name, concat(name, '->', faculty)
+  FROM Students_f
+ WHERE faculty in ('KIB', 'IT');
+----
+--
+
+=== Базовый SELECT-FROM-WHERE блок 
+--
+[source, sql]
+----
+SELECT name, concat(name, '->', faculty)
+  FROM Students_f
+ WHERE faculty in ('KIB', 'IT');
+----
+--
+
+
+
+=== Базовый SELECT-FROM-WHERE блок 
+--
+[source, sql]
+----
+SELECT name, gpa, pow(2, gpa)
+  FROM Students_f
+ WHERE faculty in ('KIB', 'IT');
+----
+--
+
+
+=== Базовый SELECT-FROM-WHERE блок 
+--
+[source, sql, step=1]
+----
+SELECT name, gpa
+  FROM Students_f
+ WHERE gpa = null;
+----
+
+[source, sql, step=2]
+----
+SELECT name, gpa
+  FROM Students_f
+ WHERE gpa is null ;
+----
+--
+
+
+
+=== Базовый SELECT-FROM-WHERE блок 
+--
+[source, sql]
+----
+SELECT name, gpa
+  FROM Students_f
+ WHERE faculty in ('KIB', 'IT') 
+   AND name = 'Ivanov';
+----
+--
+
+
+
+=== Базовый SELECT-FROM-WHERE блок 
+--
+[source, sql]
+----
+SELECT name, gpa
+  FROM Students_f
+ WHERE faculty in ('KIB', 'IT') 
+    OR name = 'Lee';
+----
+--
+
+=== Базовый SELECT-FROM-WHERE блок 
+--
+[source, sql]
+----
+SELECT name, gpa, faculty
+  FROM Students_f
+ WHERE not (faculty in ('KIB', 'IT'))
+    OR name = 'Ivanov';
+----
+--
+
+
+=== Базовый SELECT-FROM-WHERE блок 
+--
+[source, sql]
+----
+SELECT name, gpa, faculty
+  FROM Students_f
+ WHERE not (faculty in ('KIB', 'IT')) or faculty is null
+    OR name = 'Ivanov';
+----
+--
+
+=== Базовый SELECT-FROM-WHERE блок 
+--
+[source, sql]
+----
+SELECT name, gpa, faculty
+  FROM Students_f
+ WHERE not (coalesce(faculty, 'A') in ('KIB', 'IT'))
+    OR name = 'Ivanov';
+----
+--
+
+
+=== Базовый SELECT-FROM-WHERE блок 
+--
+[source, sql, step=1]
+----
+SELECT faculty
+  FROM Students_f;
+----
+
+[source, sql, step=2]
+----
+SELECT distinct 
+       faculty
+  FROM Students_f;
+----
+
+[source, sql, step=3]
+----
+SELECT distinct 
+       faculty,
+       city
+  FROM Students_f;
+----
+--
+
+== Оператор LIKE 
+--
+[source, sql]
+----
+SELECT name, gpa, faculty
+  FROM Students_f
+ WHERE name like 'I%';
+----
+--
+
+=== Оператор LIKE 
+--
+[source, sql]
+----
+SELECT name, gpa, faculty
+  FROM Students_f
+ WHERE name like '%ov%';
+----
+--
+
+=== Оператор LIKE 
+--
+[source, sql]
+----
+SELECT name, gpa, faculty
+  FROM Students_f
+ WHERE name like 'ov%';
+----
+--
+
+=== Оператор LIKE 
+--
+[source, sql]
+----
+SELECT name, gpa, faculty
+  FROM Students_f
+ WHERE name like 'L_e';
+----
+--
+
+
+== Агрегатные функции 
+--
+[source, sql]
+----
+SELECT max(gpa), min(gpa), avg(gpa), sum(gpa)
+  FROM Students_f
+----
+--
+
+
+=== Агрегатные функции 
+--
+[source, sql]
+----
+SELECT count(*), count(gpa), count(distinct gpa)
+  FROM Students_f
+----
+--
+
+
+=== Агрегатные функции 
+--
+[source, sql]
+----
+SELECT faculty, 
+       count(id),
+       avg(gpa)
+  FROM Students_f
+ group by faculty
+----
+--
+
+
+=== Агрегатные функции 
+--
+[source, sql]
+----
+SELECT faculty, 
+       count(id),
+       avg(gpa)
+  FROM Students_f
+ group by faculty
+having count(*) > 1
+----
+--
+
